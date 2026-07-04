@@ -14,7 +14,7 @@ import {
   Wrench,
   Zap,
 } from "lucide-react";
-import { articles } from "../articles";
+import { contents } from "../content";
 import {
   getEnabledTopicCount,
   getRoadmapPhaseByTitle,
@@ -38,7 +38,7 @@ const categoryConfig: Record<
   "Fundamentos da Computação": {
     icon: Cpu,
     description:
-      "Como o computador funciona: hardware, memória, SO e processos.",
+      "Como o computador funciona: hardware, memória, periféricos, redes, SO e processos.",
     iconClassName: "text-violet-500",
   },
   "Lógica de Programação": {
@@ -50,7 +50,7 @@ const categoryConfig: Record<
   "Estruturas de Dados": {
     icon: Boxes,
     description:
-      "Formas de organizar e acessar dados de maneira eficiente.",
+      "Lineares, associativas, hierárquicas e grafos — como organizar dados.",
     iconClassName: "text-indigo-500",
   },
   Algoritmos: {
@@ -145,7 +145,7 @@ export function getCategoryItems(): CategoryItem[] {
       description: phase.description ?? config.description,
       icon: config.icon,
       iconClassName: config.iconClassName,
-      count: articles.filter((article) => article.category === phase.title)
+      count: contents.filter((content) => content.category === phase.title)
         .length,
       totalTopics: phase.topics.length,
     };

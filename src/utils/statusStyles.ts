@@ -1,4 +1,4 @@
-import type { LearningStatus } from "../types/article";
+import type { LearningStatus } from "../types/content";
 
 export const statusTextStyles: Record<LearningStatus, string> = {
   Entendido: "text-emerald-600 dark:text-emerald-400",

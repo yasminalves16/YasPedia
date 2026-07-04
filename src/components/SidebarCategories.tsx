@@ -1,6 +1,6 @@
 import { ChevronDown, Library } from "lucide-react";
 import { NavLink, useLocation, useSearchParams } from "react-router-dom";
-import { categories } from "../articles";
+import { categories } from "../content";
 import { cn } from "../utils/cn";
 import { getCategoryItems } from "../utils/categories";
 

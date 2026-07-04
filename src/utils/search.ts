@@ -1,23 +1,23 @@
-import type { Article } from "../types/article";
+import type { Content } from "../types/content";
 
-export function searchArticles(articles: Article[], query: string) {
+export function searchContents(contents: Content[], query: string) {
   const normalizedQuery = query.trim().toLowerCase();
 
   if (!normalizedQuery) {
-    return articles;
+    return contents;
   }
 
-  return articles.filter((article) => {
+  return contents.filter((content) => {
     const searchableText = [
-      article.title,
-      article.question,
-      article.shortAnswer,
-      article.category,
-      article.subcategory,
-      ...article.tags,
-      ...article.relatedConcepts.map((concept) => concept.title),
-      ...article.relatedConcepts.map((concept) => concept.description),
-      ...article.relatedConcepts.map((concept) => concept.slug),
+      content.title,
+      content.question,
+      content.shortAnswer,
+      content.category,
+      content.subcategory,
+      ...content.tags,
+      ...content.relatedConcepts.map((concept) => concept.title),
+      ...content.relatedConcepts.map((concept) => concept.description),
+      ...content.relatedConcepts.map((concept) => concept.slug),
     ]
       .filter(Boolean)
       .join(" ")
@@ -27,13 +27,13 @@ export function searchArticles(articles: Article[], query: string) {
   });
 }
 
-export function getArticleStats(articles: Article[]) {
+export function getContentStats(contents: Content[]) {
   return {
-    total: articles.length,
-    continuing: articles.filter((article) => article.status === "Continuar")
+    total: contents.length,
+    continuing: contents.filter((content) => content.status === "Continuar")
       .length,
-    mastered: articles.filter((article) => article.status === "Entendido")
+    mastered: contents.filter((content) => content.status === "Entendido")
       .length,
-    favorites: articles.filter((article) => article.isFavorite).length,
+    favorites: contents.filter((content) => content.isFavorite).length,
   };
 }

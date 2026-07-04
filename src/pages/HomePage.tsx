@@ -1,21 +1,21 @@
 import { BookOpen, Brain, Compass, Heart, Layers } from "lucide-react";
 import { useMemo, useState } from "react";
-import { ArticleCard } from "../components/ArticleCard";
+import { ContentCard } from "../components/ContentCard";
 import { CategoryCard } from "../components/CategoryCard";
 import { KnowledgeSearchField } from "../components/KnowledgeSearchField";
 import { StatCard } from "../components/StatCard";
-import { useArticlesWithPreferences } from "../hooks/useArticlesWithPreferences";
+import { useContentsWithPreferences } from "../hooks/useContentsWithPreferences";
 import { getCategoryItems } from "../utils/categories";
-import { getArticleStats, searchArticles } from "../utils/search";
+import { getContentStats, searchContents } from "../utils/search";
 
 export function HomePage() {
   const [query, setQuery] = useState("");
-  const articlesWithPreferences = useArticlesWithPreferences();
-  const stats = getArticleStats(articlesWithPreferences);
+  const contentsWithPreferences = useContentsWithPreferences();
+  const stats = getContentStats(contentsWithPreferences);
   const categoryItems = getCategoryItems();
   const results = useMemo(
-    () => searchArticles(articlesWithPreferences, query),
-    [articlesWithPreferences, query],
+    () => searchContents(contentsWithPreferences, query),
+    [contentsWithPreferences, query],
   );
 
   return (
@@ -42,8 +42,8 @@ export function HomePage() {
             Resultados
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
-            {results.map((article) => (
-              <ArticleCard key={article.slug} article={article} />
+            {results.map( (content) => (
+              <ContentCard key={content.slug} content={content} />
             ))}
           </div>
         </section>

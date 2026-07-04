@@ -14,9 +14,15 @@ export interface SectionHeading {
   icon: string;
 }
 
-export interface ArticleSection extends SectionHeading {
+export interface ContentSectionItem {
+  lead: string;
+  body: string;
+}
+
+export interface ContentSection extends SectionHeading {
   id: string;
   content: string[];
+  items?: ContentSectionItem[];
 }
 
 export interface PracticeExample {
@@ -53,7 +59,7 @@ export interface RelatedConcept {
   description: string;
 }
 
-export interface Article {
+export interface Content {
   slug: string;
   title: string;
   question: string;
@@ -64,7 +70,7 @@ export interface Article {
   updatedAt: string;
   status: LearningStatus;
   isFavorite: boolean;
-  sections: ArticleSection[];
+  sections: ContentSection[];
   blockHeadings: {
     analogy: SectionHeading;
     practice: SectionHeading;
@@ -85,16 +91,16 @@ export interface Article {
     simple: PracticeExample;
     intermediate: PracticeExample;
     real: PracticeExample;
-    bad: PracticeExample;
-    bestPractices: string[];
+    bad?: PracticeExample;
+    bestPractices?: string[];
   };
-  commonMistakes: string[];
+  commonMistakes?: string[];
   behindTheScenes: string[];
   relatedConcepts: RelatedConcept[];
   faq: FAQItem[];
   exercises: Exercise[];
   selfAssessment: string[];
-  summary: string;
+  summary?: string;
   references: Reference[];
   revisionHistory: RevisionHistoryItem[];
 }

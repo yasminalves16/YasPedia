@@ -1,4 +1,4 @@
-import type { FAQItem } from "../types/article";
+import type { FAQItem } from "../types/content";
 
 interface FAQAccordionProps {
   items: FAQItem[];

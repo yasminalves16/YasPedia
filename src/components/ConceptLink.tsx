@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { conceptLinkClassName } from "./RichText";
 
 interface ConceptLinkProps {
   slug: string;
@@ -11,7 +12,7 @@ export function ConceptLink({ slug, label, description }: ConceptLinkProps) {
     <span className="group relative inline-flex">
       <Link
         to={`/conceitos/${slug}`}
-        className="font-semibold text-rose-600 underline decoration-rose-300 underline-offset-4 hover:text-rose-800 dark:text-rose-400 dark:decoration-rose-500/50 dark:hover:text-rose-300"
+        className={conceptLinkClassName}
       >
         {label}
       </Link>

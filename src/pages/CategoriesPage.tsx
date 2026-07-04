@@ -1,13 +1,13 @@
 import { FileText } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { categories } from "../articles";
+import { categories } from "../content";
 import { Breadcrumb } from "../components/Breadcrumb";
 import { KnowledgeFilters } from "../components/KnowledgeFilters";
 import { RoadmapTopicRow } from "../components/RoadmapTopicRow";
 import { getRoadmapPhaseByTitle } from "../data/roadmap";
-import { useArticlesWithPreferences } from "../hooks/useArticlesWithPreferences";
-import type { LearningStatus } from "../types/article";
+import { useContentsWithPreferences } from "../hooks/useContentsWithPreferences";
+import type { LearningStatus } from "../types/content";
 import { getCategoryByName } from "../utils/categories";
 
 export function CategoriesPage() {
@@ -15,16 +15,16 @@ export function CategoriesPage() {
   const selectedCategory = searchParams.get("categoria") ?? categories[0];
   const category = getCategoryByName(selectedCategory);
   const phase = getRoadmapPhaseByTitle(selectedCategory);
-  const articlesWithPreferences = useArticlesWithPreferences();
+  const contentsWithPreferences = useContentsWithPreferences();
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [selectedStatuses, setSelectedStatuses] = useState<LearningStatus[]>([]);
 
-  const articleBySlug = useMemo(
+  const contentBySlug = useMemo(
     () =>
       new Map(
-        articlesWithPreferences.map((article) => [article.slug, article]),
+        contentsWithPreferences.map((content) => [content.slug, content]),
       ),
-    [articlesWithPreferences],
+    [contentsWithPreferences],
   );
 
   const visibleTopics = useMemo(() => {
@@ -33,21 +33,21 @@ export function CategoriesPage() {
     return phase.topics.filter((topic) => {
       if (!topic.enabled) return true;
 
-      const article = topic.slug ? articleBySlug.get(topic.slug) : undefined;
-      if (!article) return false;
+      const content = topic.slug ? contentBySlug.get(topic.slug) : undefined;
+      if (!content) return false;
 
-      if (favoritesOnly && !article.isFavorite) return false;
+      if (favoritesOnly && !content.isFavorite) return false;
 
       if (
         selectedStatuses.length > 0 &&
-        !selectedStatuses.includes(article.status)
+        !selectedStatuses.includes(content.status)
       ) {
         return false;
       }
 
       return true;
     });
-  }, [phase, articleBySlug, favoritesOnly, selectedStatuses]);
+  }, [phase, contentBySlug, favoritesOnly, selectedStatuses]);
 
   const enabledInPhase = phase?.topics.filter((topic) => topic.enabled) ?? [];
 
@@ -83,7 +83,7 @@ export function CategoriesPage() {
     : null;
 
   const renderTopic = (topic: (typeof phase.topics)[number]) => {
-    const article = topic.slug ? articleBySlug.get(topic.slug) : undefined;
+    const content = topic.slug ? contentBySlug.get(topic.slug) : undefined;
     const isFilteredOut =
       topic.enabled &&
       !visibleTopics.some((visible) => visible.id === topic.id);
@@ -91,7 +91,7 @@ export function CategoriesPage() {
     if (isFilteredOut) return null;
 
     return (
-      <RoadmapTopicRow key={topic.id} topic={topic} article={article} />
+      <RoadmapTopicRow key={topic.id} topic={topic} content={content} />
     );
   };
 

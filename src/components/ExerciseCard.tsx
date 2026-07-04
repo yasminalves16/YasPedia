@@ -1,4 +1,4 @@
-import type { Exercise } from "../types/article";
+import type { Exercise } from "../types/content";
 import { Card } from "./ui/card";
 
 interface ExerciseCardProps {

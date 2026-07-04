@@ -1,19 +1,19 @@
 import type { ReactNode } from "react";
 import { DynamicIcon } from "./DynamicIcon";
 
-interface ArticleSectionProps {
+interface ContentSectionProps {
   id: string;
   title: string;
   icon: string;
   children: ReactNode;
 }
 
-export function ArticleSection({
+export function ContentSection({
   id,
   title,
   icon,
   children,
-}: ArticleSectionProps) {
+}: ContentSectionProps) {
   return (
     <section id={id} className="scroll-mt-8 space-y-3">
       <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight text-slate-950 dark:text-slate-50">

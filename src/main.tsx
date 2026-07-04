@@ -3,16 +3,16 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { UserArticleStateProvider } from "./contexts/UserArticleStateContext";
+import { UserContentStateProvider } from "./contexts/UserContentStateContext";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <ThemeProvider>
-        <UserArticleStateProvider>
+        <UserContentStateProvider>
           <App />
-        </UserArticleStateProvider>
+        </UserContentStateProvider>
       </ThemeProvider>
     </BrowserRouter>
   </StrictMode>,

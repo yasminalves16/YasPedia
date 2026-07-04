@@ -1,4 +1,4 @@
-import { useUserArticleState } from "../contexts/UserArticleStateContext";
+import { useUserContentState } from "../contexts/UserContentStateContext";
 import { cn } from "../utils/cn";
 
 interface SelfAssessmentListProps {
@@ -8,7 +8,7 @@ interface SelfAssessmentListProps {
 
 export function SelfAssessmentList({ slug, items }: SelfAssessmentListProps) {
   const { isSelfAssessmentChecked, toggleSelfAssessment } =
-    useUserArticleState();
+    useUserContentState();
 
   return (
     <ul className="space-y-2">

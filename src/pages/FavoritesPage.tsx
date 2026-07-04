@@ -1,9 +1,9 @@
-import { ArticleCard } from "../components/ArticleCard";
-import { useArticlesWithPreferences } from "../hooks/useArticlesWithPreferences";
+import { ContentCard } from "../components/ContentCard";
+import { useContentsWithPreferences } from "../hooks/useContentsWithPreferences";
 
 export function FavoritesPage() {
-  const articlesWithPreferences = useArticlesWithPreferences();
-  const favorites = articlesWithPreferences.filter((article) => article.isFavorite);
+  const contentsWithPreferences = useContentsWithPreferences();
+  const favorites = contentsWithPreferences.filter( (content) => content.isFavorite);
 
   return (
     <div className="space-y-8">
@@ -18,8 +18,8 @@ export function FavoritesPage() {
 
       <div className="grid gap-4 md:grid-cols-2">
         {favorites.length > 0 ? (
-          favorites.map((article) => (
-            <ArticleCard key={article.slug} article={article} />
+          favorites.map( (content) => (
+            <ContentCard key={content.slug} content={content} />
           ))
         ) : (
           <p className="text-slate-500 dark:text-slate-400">

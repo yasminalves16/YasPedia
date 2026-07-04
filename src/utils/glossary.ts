@@ -1,4 +1,4 @@
-import { articles } from "../articles";
+import { contents } from "../content";
 
 export interface GlossaryConcept {
   title: string;
@@ -7,13 +7,13 @@ export interface GlossaryConcept {
 }
 
 export function getGlossaryConcepts(): GlossaryConcept[] {
-  const concepts = articles.flatMap((article) => [
+  const concepts = contents.flatMap((content) => [
     {
-      title: article.title,
-      slug: article.slug,
-      description: article.shortAnswer,
+      title: content.title,
+      slug: content.slug,
+      description: content.shortAnswer,
     },
-    ...article.relatedConcepts,
+    ...content.relatedConcepts,
   ]);
 
   const unique = new Map<string, GlossaryConcept>();

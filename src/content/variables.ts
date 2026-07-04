@@ -1,6 +1,6 @@
-import type { Article } from "../types/article";
+import type { Content } from "../types/content";
 
-export const variablesArticle: Article = {
+export const variablesContent: Content = {
   slug: "variaveis",
   title: "Variáveis",
   question: "O que são variáveis?",

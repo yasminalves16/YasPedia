@@ -6,17 +6,18 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { LearningStatus } from "../types/article";
+import type { LearningStatus } from "../types/content";
 
-const STORAGE_KEY = "yaspedia-article-preferences";
+const STORAGE_KEY = "yaspedia-content-preferences";
+const LEGACY_STORAGE_KEY = "yaspedia-article-preferences";
 
-interface ArticlePreferences {
+interface ContentPreferences {
   favoriteOverrides: Record<string, boolean>;
   statusOverrides: Record<string, LearningStatus>;
   selfAssessmentChecked: Record<string, string[]>;
 }
 
-interface UserArticleStateContextValue {
+interface UserContentStateContextValue {
   isFavorite: (slug: string, defaultValue: boolean) => boolean;
   getStatus: (slug: string, defaultValue: LearningStatus) => LearningStatus;
   isSelfAssessmentChecked: (slug: string, item: string) => boolean;
@@ -25,12 +26,15 @@ interface UserArticleStateContextValue {
   toggleSelfAssessment: (slug: string, item: string) => void;
 }
 
-const UserArticleStateContext =
-  createContext<UserArticleStateContextValue | null>(null);
+const UserContentStateContext =
+  createContext<UserContentStateContextValue | null>(null);
 
-function readPreferences(): ArticlePreferences {
+function readPreferences(): ContentPreferences {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored =
+      localStorage.getItem(STORAGE_KEY) ??
+      localStorage.getItem(LEGACY_STORAGE_KEY);
+
     if (!stored) {
       return {
         favoriteOverrides: {},
@@ -39,7 +43,7 @@ function readPreferences(): ArticlePreferences {
       };
     }
 
-    const parsed = JSON.parse(stored) as ArticlePreferences;
+    const parsed = JSON.parse(stored) as ContentPreferences;
     return {
       favoriteOverrides: parsed.favoriteOverrides ?? {},
       statusOverrides: parsed.statusOverrides ?? {},
@@ -54,8 +58,8 @@ function readPreferences(): ArticlePreferences {
   }
 }
 
-export function UserArticleStateProvider({ children }: { children: ReactNode }) {
-  const [preferences, setPreferences] = useState<ArticlePreferences>(
+export function UserContentStateProvider({ children }: { children: ReactNode }) {
+  const [preferences, setPreferences] = useState<ContentPreferences>(
     readPreferences,
   );
 
@@ -63,7 +67,7 @@ export function UserArticleStateProvider({ children }: { children: ReactNode }) 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
   }, [preferences]);
 
-  const value = useMemo<UserArticleStateContextValue>(
+  const value = useMemo<UserContentStateContextValue>(
     () => ({
       isFavorite: (slug, defaultValue) =>
         preferences.favoriteOverrides[slug] ?? defaultValue,
@@ -108,17 +112,17 @@ export function UserArticleStateProvider({ children }: { children: ReactNode }) 
   );
 
   return (
-    <UserArticleStateContext.Provider value={value}>
+    <UserContentStateContext.Provider value={value}>
       {children}
-    </UserArticleStateContext.Provider>
+    </UserContentStateContext.Provider>
   );
 }
 
-export function useUserArticleState() {
-  const context = useContext(UserArticleStateContext);
+export function useUserContentState() {
+  const context = useContext(UserContentStateContext);
   if (!context) {
     throw new Error(
-      "useUserArticleState deve ser usado dentro de UserArticleStateProvider",
+      "useUserContentState deve ser usado dentro de UserContentStateProvider",
     );
   }
   return context;

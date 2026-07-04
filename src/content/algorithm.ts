@@ -1,6 +1,6 @@
-import type { Article } from "../types/article";
+import type { Content } from "../types/content";
 
-export const algorithmArticle: Article = {
+export const algorithmContent: Content = {
   slug: "o-que-e-um-algoritmo",
   title: "O que é um Algoritmo?",
   question: "O que é um algoritmo?",

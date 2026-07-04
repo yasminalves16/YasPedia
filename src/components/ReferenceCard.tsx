@@ -1,5 +1,5 @@
 import { ExternalLink } from "lucide-react";
-import type { Reference } from "../types/article";
+import type { Reference } from "../types/content";
 import { cn } from "../utils/cn";
 
 interface ReferenceCardProps {
