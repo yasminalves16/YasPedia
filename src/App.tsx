@@ -2,10 +2,11 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { Header, HeaderToolbar } from "./components/Header";
 import { Sidebar } from "./components/Sidebar";
 import { YasPediaLogo } from "./components/YasPediaLogo";
-import { ArticlePage } from "./pages/ArticlePage";
+import { ContentPage } from "./pages/ContentPage";
 import { CategoriesPage } from "./pages/CategoriesPage";
 import { FavoritesPage } from "./pages/FavoritesPage";
 import { HomePage } from "./pages/HomePage";
+import { NotesPage } from "./pages/NotesPage";
 import { SearchPage } from "./pages/SearchPage";
 
 function AppRoutes() {
@@ -13,10 +14,12 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/busca" element={<SearchPage />} />
+      <Route path="/notas" element={<Navigate to="/busca?view=notas" replace />} />
       <Route path="/categorias" element={<CategoriesPage />} />
       <Route path="/glossario" element={<Navigate to="/busca?view=glossario" replace />} />
       <Route path="/favoritos" element={<FavoritesPage />} />
-      <Route path="/conceitos/:slug" element={<ArticlePage />} />
+      <Route path="/conceitos/:slug/anotacoes" element={<NotesPage />} />
+      <Route path="/conceitos/:slug" element={<ContentPage />} />
     </Routes>
   );
 }
@@ -44,7 +47,10 @@ export default function App() {
 
         <Sidebar className="min-h-0 border-r" />
 
-        <main className="min-h-0 overflow-y-auto bg-white px-8 py-8 dark:bg-slate-950">
+        <main
+          id="app-scroll-container"
+          className="min-h-0 overflow-y-auto bg-white px-8 py-8 dark:bg-slate-950"
+        >
           <div className="mx-auto max-w-6xl">
             <AppRoutes />
           </div>
