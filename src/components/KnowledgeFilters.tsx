@@ -1,7 +1,7 @@
 import { Heart, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
-import { categories } from "../articles";
-import type { LearningStatus } from "../types/article";
+import { categories } from "../content";
+import type { LearningStatus } from "../types/content";
 import { cn } from "../utils/cn";
 
 const statusOptions: LearningStatus[] = [
@@ -14,7 +14,7 @@ const statusOptions: LearningStatus[] = [
 
 const pillClass = (isSelected: boolean) =>
   cn(
-    "rounded-full border px-4 py-1.5 text-sm font-medium transition",
+    "cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium transition",
     isSelected
       ? "border-rose-300 bg-rose-50 text-rose-600 dark:border-rose-500/40 dark:bg-rose-500/10 dark:text-rose-400"
       : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300 dark:hover:border-slate-600",
@@ -48,7 +48,7 @@ export function KnowledgeFilters({
         type="button"
         onClick={() => setOpen((current) => !current)}
         className={cn(
-          "inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition",
+          "inline-flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition",
           open
             ? "border-rose-200 bg-rose-50 text-rose-600 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-400"
             : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300",

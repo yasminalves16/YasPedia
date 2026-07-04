@@ -1,18 +1,22 @@
-import { BookOpen, Search } from "lucide-react";
+import { BookOpen, NotebookPen, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { ArticleCard } from "../components/ArticleCard";
+import { contentBySlug } from "../content";
+import { contentNotes } from "../notes";
+import { ContentCard } from "../components/ContentCard";
 import { GlossaryConceptCard } from "../components/GlossaryConceptCard";
 import { KnowledgeFilters } from "../components/KnowledgeFilters";
 import { KnowledgeSearchField } from "../components/KnowledgeSearchField";
-import { useArticlesWithPreferences } from "../hooks/useArticlesWithPreferences";
-import type { LearningStatus } from "../types/article";
+import { NoteCard } from "../components/NoteCard";
+import { useContentsWithPreferences } from "../hooks/useContentsWithPreferences";
+import type { LearningStatus } from "../types/content";
 import { cn } from "../utils/cn";
 import {
   getGlossaryConcepts,
   searchGlossaryConcepts,
 } from "../utils/glossary";
-import { searchArticles } from "../utils/search";
+import { searchNotes } from "../utils/notesSearch";
+import { searchContents } from "../utils/search";
 
 const validStatuses: LearningStatus[] = [
   "Não estudado",
@@ -22,7 +26,7 @@ const validStatuses: LearningStatus[] = [
   "Continuar",
 ];
 
-type SearchView = "busca" | "glossario";
+type SearchView = "busca" | "glossario" | "notas";
 
 function parseStatus(value: string | null): LearningStatus | null {
   if (!value) return null;
@@ -32,12 +36,24 @@ function parseStatus(value: string | null): LearningStatus | null {
 }
 
 function parseView(value: string | null): SearchView {
-  return value === "glossario" ? "glossario" : "busca";
+  if (value === "glossario") return "glossario";
+  if (value === "notas") return "notas";
+  return "busca";
 }
+
+const viewTabs: Array<{
+  id: SearchView;
+  label: string;
+  icon: typeof Search;
+}> = [
+  { id: "busca", label: "Busca", icon: Search },
+  { id: "glossario", label: "Glossário", icon: BookOpen },
+  { id: "notas", label: "Notas", icon: NotebookPen },
+];
 
 export function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const articlesWithPreferences = useArticlesWithPreferences();
+  const contentsWithPreferences = useContentsWithPreferences();
   const urlQuery = searchParams.get("q") ?? "";
   const urlStatus = parseStatus(searchParams.get("status"));
   const view = parseView(searchParams.get("view"));
@@ -60,29 +76,35 @@ export function SearchPage() {
     }
   }, [urlStatus]);
 
-  const articleResults = useMemo(() => {
-    return searchArticles(articlesWithPreferences, query).filter((article) => {
-      if (favoritesOnly && !article.isFavorite) {
+  const contentResults = useMemo(() => {
+    return searchContents(contentsWithPreferences, query).filter((content) => {
+      if (favoritesOnly && !content.isFavorite) {
         return false;
       }
 
       if (
         selectedStatuses.length > 0 &&
-        !selectedStatuses.includes(article.status)
+        !selectedStatuses.includes(content.status)
       ) {
         return false;
       }
 
       if (
         selectedCategories.length > 0 &&
-        !selectedCategories.includes(article.category)
+        !selectedCategories.includes(content.category)
       ) {
         return false;
       }
 
       return true;
     });
-  }, [articlesWithPreferences, query, selectedCategories, favoritesOnly, selectedStatuses]);
+  }, [
+    contentsWithPreferences,
+    query,
+    selectedCategories,
+    favoritesOnly,
+    selectedStatuses,
+  ]);
 
   const glossaryResults = useMemo(() => {
     const matched = searchGlossaryConcepts(glossaryConcepts, query);
@@ -91,10 +113,15 @@ export function SearchPage() {
       return matched;
     }
 
-    const articleSlugs = new Set(articleResults.map((article) => article.slug));
+    const contentSlugs = new Set(contentResults.map((content) => content.slug));
 
-    return matched.filter((concept) => !articleSlugs.has(concept.slug));
-  }, [glossaryConcepts, query, view, articleResults]);
+    return matched.filter((concept) => !contentSlugs.has(concept.slug));
+  }, [glossaryConcepts, query, view, contentResults]);
+
+  const notesResults = useMemo(
+    () => searchNotes(contentNotes, query),
+    [query],
+  );
 
   const toggleCategory = (category: string) => {
     setSelectedCategories((current) =>
@@ -114,10 +141,10 @@ export function SearchPage() {
 
   const setView = (nextView: SearchView) => {
     const params = new URLSearchParams(searchParams);
-    if (nextView === "glossario") {
-      params.set("view", "glossario");
-    } else {
+    if (nextView === "busca") {
       params.delete("view");
+    } else {
+      params.set("view", nextView);
     }
     setSearchParams(params);
   };
@@ -133,61 +160,74 @@ export function SearchPage() {
     setSearchParams(params);
   };
 
-  const showGlossary = view === "glossario";
-  const resultCount = showGlossary
-    ? glossaryResults.length
-    : articleResults.length + glossaryResults.length;
+  const pageTitle =
+    view === "glossario"
+      ? "Glossário"
+      : view === "notas"
+        ? "Notas"
+        : "Busca";
+
+  const pageDescription =
+    view === "glossario"
+      ? "Definições curtas para consulta rápida durante o estudo."
+      : view === "notas"
+        ? "Suas anotações pessoais, separadas do conteúdo publicado. Pesquise dentro das notas organizadas por conceito."
+        : "Encontre conceitos por título, categoria, tag ou termo do glossário.";
+
+  const searchPlaceholder =
+    view === "notas"
+      ? "Buscar nas suas anotações..."
+      : undefined;
+
+  const resultCount =
+    view === "glossario"
+      ? glossaryResults.length
+      : view === "notas"
+        ? notesResults.length
+        : contentResults.length + glossaryResults.length;
 
   return (
     <div className="space-y-8">
       <section className="mx-auto max-w-5xl space-y-8 text-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 md:text-4xl">
-            {showGlossary ? "Glossário" : "Busca"}
+            {pageTitle}
           </h1>
           <p className="mt-4 text-base leading-7 text-slate-500 dark:text-slate-400">
-            {showGlossary
-              ? "Definições curtas para consulta rápida durante o estudo."
-              : "Encontre conceitos por título, categoria, tag ou termo do glossário."}
+            {pageDescription}
           </p>
         </div>
 
         <KnowledgeSearchField
           value={query}
           onChange={(event) => handleQueryChange(event.target.value)}
+          placeholder={searchPlaceholder}
         />
 
-        <div className="flex justify-center gap-2">
-          <button
-            type="button"
-            onClick={() => setView("busca")}
-            className={cn(
-              "inline-flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition",
-              view === "busca"
-                ? "border-rose-300 bg-rose-50 text-rose-600 dark:border-rose-500/40 dark:bg-rose-500/10 dark:text-rose-400"
-                : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300",
-            )}
-          >
-            <Search size={16} strokeWidth={1.75} />
-            Busca
-          </button>
-          <button
-            type="button"
-            onClick={() => setView("glossario")}
-            className={cn(
-              "inline-flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition",
-              view === "glossario"
-                ? "border-rose-300 bg-rose-50 text-rose-600 dark:border-rose-500/40 dark:bg-rose-500/10 dark:text-rose-400"
-                : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300",
-            )}
-          >
-            <BookOpen size={16} strokeWidth={1.75} />
-            Glossário
-          </button>
+        <div className="flex flex-wrap justify-center gap-2">
+          {viewTabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setView(tab.id)}
+                className={cn(
+                  "inline-flex cursor-pointer items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition",
+                  view === tab.id
+                    ? "border-rose-300 bg-rose-50 text-rose-600 dark:border-rose-500/40 dark:bg-rose-500/10 dark:text-rose-400"
+                    : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300",
+                )}
+              >
+                <Icon size={16} strokeWidth={1.75} />
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
       </section>
 
-      {!showGlossary && (
+      {view === "busca" && (
         <KnowledgeFilters
           resultCount={resultCount}
           favoritesOnly={favoritesOnly}
@@ -199,7 +239,7 @@ export function SearchPage() {
         />
       )}
 
-      {showGlossary ? (
+      {view === "glossario" && (
         <div className="grid gap-4 md:grid-cols-2">
           {glossaryResults.length > 0 ? (
             glossaryResults.map((concept) => (
@@ -214,16 +254,49 @@ export function SearchPage() {
             </p>
           )}
         </div>
-      ) : (
+      )}
+
+      {view === "notas" && (
+        <>
+          <p className="text-center text-sm text-slate-500 dark:text-slate-400">
+            {notesResults.length === 1
+              ? "1 conjunto de anotações"
+              : `${notesResults.length} conjuntos de anotações`}
+          </p>
+          {notesResults.length > 0 ? (
+            <div className="grid gap-4 md:grid-cols-2">
+              {notesResults.map((notes) => {
+                const content = contentBySlug.get(notes.slug);
+
+                return (
+                  <NoteCard
+                    key={notes.slug}
+                    slug={notes.slug}
+                    title={notes.title}
+                    contentTitle={content?.title ?? notes.title}
+                    category={content?.category ?? "Sem categoria"}
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-center text-slate-500 dark:text-slate-400">
+              Nenhuma anotação encontrada com esse termo.
+            </p>
+          )}
+        </>
+      )}
+
+      {view === "busca" && (
         <div className="space-y-8">
-          {articleResults.length > 0 && (
+          {contentResults.length > 0 && (
             <section className="space-y-4">
               <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-50">
                 Conhecimentos
               </h2>
               <div className="grid gap-4 md:grid-cols-2">
-                {articleResults.map((article) => (
-                  <ArticleCard key={article.slug} article={article} />
+                {contentResults.map((content) => (
+                  <ContentCard key={content.slug} content={content} />
                 ))}
               </div>
             </section>
@@ -245,7 +318,7 @@ export function SearchPage() {
             </section>
           )}
 
-          {articleResults.length === 0 && glossaryResults.length === 0 && (
+          {contentResults.length === 0 && glossaryResults.length === 0 && (
             <p className="text-slate-500 dark:text-slate-400">
               Nenhum conhecimento encontrado com os filtros atuais.
             </p>
