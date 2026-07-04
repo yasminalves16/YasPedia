@@ -2,7 +2,7 @@ import type { ContentNotes } from "../../types/notes";
 
 export const computerNotes: ContentNotes = {
   slug: "o-que-e-um-computador",
-  title: "O que é um computador",
+  title: "O que é Computador",
   sections: [
     {
       id: "definicoes",

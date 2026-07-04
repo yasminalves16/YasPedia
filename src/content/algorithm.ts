@@ -2,8 +2,8 @@ import type { Content } from "../types/content";
 
 export const algorithmContent: Content = {
   slug: "o-que-e-um-algoritmo",
-  title: "O que é um Algoritmo?",
-  question: "O que é um algoritmo?",
+  title: "O que é Algoritmo",
+  question: "O que é algoritmo?",
   shortAnswer:
     "Um algoritmo é uma sequência finita de passos lógicos usada para resolver um problema ou executar uma tarefa.",
   category: "Lógica de Programação",
