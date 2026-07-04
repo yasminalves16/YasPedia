@@ -1,0 +1,191 @@
+---
+description: Organize uncommitted changes into semantic commits with git add commands. Invoke with @commits.mdc
+alwaysApply: false
+---
+
+# Commit organizer
+
+When the user invokes `@commits.mdc`, organize their **current uncommitted changes** into semantic commits.
+
+## Rules (mandatory)
+
+1. **Never use partial staging** — do NOT use `git add -p`, `git add -i`, or any interactive/patch staging.
+2. **Never use** `git commit -p` or amend unless the user explicitly asks.
+3. **One file = one commit** — each file goes in exactly one commit. No splitting a file across commits.
+4. **Short English messages** in Conventional Commits format: `type: description`
+   - Types: `feat`, `fix`, `refactor`, `docs`, `style`, `chore`, `test`
+   - Lowercase after the colon, no period at the end, imperative mood
+   - **Single line only** — no commit body, no multiline messages
+5. **Group by purpose** — files changed for the same feature/fix go in the same commit.
+6. **Commit order** — foundation first (refactor/types), then features, then fixes, then data/content.
+7. **Output format** — return numbered commits, each with:
+   - `git add` listing every file (one block, full paths)
+   - `git commit -m "type: message"` on a single line
+8. **Do not commit** unless the user explicitly asks — only return the plan unless they say "faça os commits".
+9. **Check first** — run `git status --short` and `git diff --stat` before proposing commits.
+10. **Skip secrets** — never stage `.env`, credentials, or tokens.
+
+## Commit message template
+
+```bash
+git commit -m "type: short description in english"
+```
+
+## How to group
+
+| Change type | Commit type | Example |
+|-------------|-------------|---------|
+| Rename/restructure, no new behavior | `refactor` | rename articles to content |
+| New feature or page | `feat` | add personal notes pages |
+| Bug fix | `fix` | table of contents scroll and hash navigation |
+| Data-only (roadmap, content text) | `feat` or `chore` | expand computer fundamentals topics in roadmap |
+| CSS/visual only | `style` | unify action button typography |
+| Docs | `docs` | expand project readme |
+
+## Output template for the user
+
+```markdown
+## Status
+[clean / N files changed]
+
+## Commits (run in order)
+
+### 1. `type: message`
+\`\`\`bash
+git add \
+  path/to/file1 \
+  path/to/file2
+
+git commit -m "type: message"
+\`\`\`
+
+### 2. ...
+```
+
+---
+
+## Reference session — Jul 4, 2026
+
+**Status:** all commits applied, working tree clean.
+
+These 8 commits cover the articles→content refactor, computer concept, notes, action bar, search tab, TOC fix, and roadmap updates. Use as a template for similar work.
+
+### 1. `refactor: rename articles to content`
+
+```bash
+git add \
+  src/articles/ \
+  src/types/article.ts \
+  src/types/content.ts \
+  src/contexts/UserArticleStateContext.tsx \
+  src/contexts/UserContentStateContext.tsx \
+  src/hooks/useArticlesWithPreferences.ts \
+  src/hooks/useContentsWithPreferences.ts \
+  src/components/ArticleCard.tsx \
+  src/components/ArticleHeader.tsx \
+  src/components/ArticleSection.tsx \
+  src/components/CategoryArticleRow.tsx \
+  src/components/CategoryContentRow.tsx \
+  src/components/ContentCard.tsx \
+  src/components/ContentSection.tsx \
+  src/components/ConceptLink.tsx \
+  src/components/ExerciseCard.tsx \
+  src/components/FAQAccordion.tsx \
+  src/components/ReferenceCard.tsx \
+  src/components/RoadmapTopicRow.tsx \
+  src/components/SelfAssessmentList.tsx \
+  src/components/SidebarCategories.tsx \
+  src/pages/ArticlePage.tsx \
+  src/pages/CategoriesPage.tsx \
+  src/pages/FavoritesPage.tsx \
+  src/pages/HomePage.tsx \
+  src/content/algorithm.ts \
+  src/content/variables.ts \
+  src/utils/categories.ts \
+  src/utils/glossary.ts \
+  src/utils/search.ts \
+  src/utils/statusStyles.ts \
+  src/main.tsx
+
+git commit -m "refactor: rename articles to content"
+```
+
+### 2. `feat: add computer concept with rich text links`
+
+```bash
+git add \
+  src/content/computer/ \
+  src/content/index.ts \
+  src/components/RichText.tsx \
+  src/components/SectionHighlightList.tsx \
+  src/components/ContentHeader.tsx \
+  src/pages/ContentPage.tsx \
+  src/App.tsx
+
+git commit -m "feat: add computer concept with rich text links"
+```
+
+### 3. `feat: add personal notes pages`
+
+```bash
+git add \
+  src/notes/ \
+  src/types/notes.ts \
+  src/pages/NotesPage.tsx \
+  src/components/NoteCard.tsx \
+  src/utils/notesSearch.ts
+
+git commit -m "feat: add personal notes pages"
+```
+
+### 4. `feat: add content action bar with share and status`
+
+```bash
+git add \
+  src/components/ContentActionBar.tsx \
+  src/components/FavoriteButton.tsx \
+  src/components/StatusSelect.tsx \
+  src/utils/contentActionButton.ts \
+  src/index.css
+
+git commit -m "feat: add content action bar with share and status"
+```
+
+### 5. `feat: add notes tab to search page`
+
+```bash
+git add \
+  src/pages/SearchPage.tsx \
+  src/components/KnowledgeFilters.tsx
+
+git commit -m "feat: add notes tab to search page"
+```
+
+### 6. `fix: table of contents scroll and hash navigation`
+
+```bash
+git add \
+  src/utils/scroll.ts \
+  src/hooks/useScrollToHash.ts \
+  src/components/TableOfContents.tsx
+
+git commit -m "fix: table of contents scroll and hash navigation"
+```
+
+### 7. `feat: expand study roadmap topics`
+
+```bash
+git add \
+  src/data/roadmap.ts
+
+git commit -m "feat: expand study roadmap topics"
+```
+
+### 8. `feat: expand computer fundamentals topics in roadmap`
+
+```bash
+git add \
+  src/data/roadmap.ts
+
+git commit -m "feat: expand computer fundamentals topics in roadmap"
+```
