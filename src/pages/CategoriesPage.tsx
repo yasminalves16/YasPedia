@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { categories } from "../content";
 import { Breadcrumb } from "../components/Breadcrumb";
 import { KnowledgeFilters } from "../components/KnowledgeFilters";
+import { RoadmapGroupSection } from "../components/RoadmapGroupSection";
 import { RoadmapTopicRow } from "../components/RoadmapTopicRow";
 import { getRoadmapPhaseByTitle } from "../data/roadmap";
 import { useContentsWithPreferences } from "../hooks/useContentsWithPreferences";
@@ -139,16 +140,27 @@ export function CategoriesPage() {
 
       <section className="space-y-3">
         {groupedTopics ? (
-          [...groupedTopics.entries()].map(([group, topics]) => (
-            <div key={group ?? "default"} className="space-y-3">
-              {group && (
-                <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
-                  {group}
-                </h2>
-              )}
-              {topics.map(renderTopic)}
-            </div>
-          ))
+          [...groupedTopics.entries()].map(([group, topics]) => {
+            const visibleInGroup = topics
+              .map(renderTopic)
+              .filter((node) => node !== null);
+
+            if (visibleInGroup.length === 0) return null;
+
+            if (!group) {
+              return (
+                <div key="default" className="space-y-3">
+                  {visibleInGroup}
+                </div>
+              );
+            }
+
+            return (
+              <RoadmapGroupSection key={group} title={group}>
+                {visibleInGroup}
+              </RoadmapGroupSection>
+            );
+          })
         ) : visibleTopics.length > 0 ? (
           visibleTopics.map(renderTopic)
         ) : (
