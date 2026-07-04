@@ -1,8 +1,25 @@
+import { useLocation, useNavigate } from "react-router-dom";
+import { scrollToSection } from "../utils/scroll";
+
 interface TableOfContentsProps {
   sections: Array<{ id: string; title: string }>;
 }
 
 export function TableOfContents({ sections }: TableOfContentsProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleSectionClick = (id: string) => {
+    scrollToSection(id);
+
+    if (location.hash !== `#${id}`) {
+      navigate(
+        { pathname: location.pathname, search: location.search, hash: id },
+        { replace: false },
+      );
+    }
+  };
+
   return (
     <aside className="sticky top-8 hidden h-fit border-l border-slate-200 pl-5 dark:border-slate-700 xl:block">
       <p className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -13,7 +30,11 @@ export function TableOfContents({ sections }: TableOfContentsProps) {
           <a
             key={section.id}
             href={`#${section.id}`}
-            className="block text-sm leading-relaxed text-slate-600 transition hover:text-slate-950 dark:text-slate-400 dark:hover:text-slate-100"
+            onClick={(event) => {
+              event.preventDefault();
+              handleSectionClick(section.id);
+            }}
+            className="block cursor-pointer text-sm leading-relaxed text-slate-600 transition hover:text-slate-950 dark:text-slate-400 dark:hover:text-slate-100"
           >
             {section.title}
           </a>
