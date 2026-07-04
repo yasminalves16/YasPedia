@@ -4,34 +4,84 @@ import {
   Boxes,
   Braces,
   Code2,
+  Cpu,
   FlaskConical,
-  Gauge,
-  GitBranch,
   Globe,
   Layers,
   Network,
   Palette,
+  Sparkles,
+  Wrench,
   Zap,
 } from "lucide-react";
-import { articles, categories } from "../articles";
+import { articles } from "../articles";
+import {
+  getEnabledTopicCount,
+  getRoadmapPhaseByTitle,
+  roadmapPhases,
+} from "../data/roadmap";
 
 export interface CategoryItem {
   name: string;
+  id: string;
   description: string;
   icon: LucideIcon;
   iconClassName: string;
   count: number;
+  totalTopics: number;
 }
 
 const categoryConfig: Record<
   string,
   { icon: LucideIcon; description: string; iconClassName: string }
 > = {
-  Fundamentos: {
+  "Fundamentos da Computação": {
+    icon: Cpu,
+    description:
+      "Como o computador funciona: hardware, memória, SO e processos.",
+    iconClassName: "text-violet-500",
+  },
+  "Lógica de Programação": {
     icon: Layers,
     description:
       "Conceitos essenciais para começar a programar com segurança e clareza.",
     iconClassName: "text-violet-500",
+  },
+  "Estruturas de Dados": {
+    icon: Boxes,
+    description:
+      "Formas de organizar e acessar dados de maneira eficiente.",
+    iconClassName: "text-indigo-500",
+  },
+  Algoritmos: {
+    icon: Code2,
+    description:
+      "Técnicas de busca, ordenação, grafos e análise de complexidade.",
+    iconClassName: "text-blue-500",
+  },
+  "Como uma Linguagem Funciona": {
+    icon: Braces,
+    description:
+      "Do código-fonte ao código de máquina: lexer, parser, AST e JIT.",
+    iconClassName: "text-amber-500",
+  },
+  Internet: {
+    icon: Network,
+    description:
+      "Protocolos, rede e comunicação entre cliente, servidor e APIs.",
+    iconClassName: "text-emerald-500",
+  },
+  Browser: {
+    icon: Globe,
+    description:
+      "Essa fase é MUITO importante para Front-end. Renderização, DOM, eventos e CSS no navegador.",
+    iconClassName: "text-cyan-500",
+  },
+  "CSS (aprofundado)": {
+    icon: Palette,
+    description:
+      "Seletores, layout avançado, animações e performance visual na web.",
+    iconClassName: "text-rose-500",
   },
   JavaScript: {
     icon: Braces,
@@ -45,59 +95,22 @@ const categoryConfig: Record<
       "Tipagem estática sobre JavaScript para código mais previsível.",
     iconClassName: "text-blue-500",
   },
-  HTML: {
-    icon: Code2,
-    description:
-      "Estrutura, semântica e fundamentos das páginas web.",
-    iconClassName: "text-orange-500",
-  },
-  CSS: {
-    icon: Palette,
-    description:
-      "Estilos, layout, responsividade e apresentação visual na web.",
-    iconClassName: "text-rose-500",
-  },
-  Browser: {
-    icon: Globe,
-    description:
-      "Como o navegador renderiza, executa e otimiza aplicações web.",
-    iconClassName: "text-cyan-500",
-  },
-  HTTP: {
-    icon: Network,
-    description:
-      "Protocolo de comunicação entre cliente, servidor e APIs.",
-    iconClassName: "text-emerald-500",
-  },
-  Git: {
-    icon: GitBranch,
-    description:
-      "Controle de versão, branches e colaboração em projetos.",
-    iconClassName: "text-orange-600",
-  },
   React: {
     icon: Atom,
     description:
       "Biblioteca para construir interfaces com componentes reutilizáveis.",
     iconClassName: "text-sky-500",
   },
-  "Next.js": {
+  "Ecossistema React": {
     icon: Zap,
     description:
-      "Framework React para rotas, SSR e aplicações full-stack.",
-    iconClassName: "text-slate-700 dark:text-slate-300",
+      "Ferramentas e bibliotecas que complementam projetos React.",
+    iconClassName: "text-sky-500",
   },
-  Arquitetura: {
-    icon: Boxes,
-    description:
-      "Padrões, organização e decisões estruturais de software.",
-    iconClassName: "text-indigo-500",
-  },
-  Performance: {
-    icon: Gauge,
-    description:
-      "Otimização, métricas e experiência rápida para o usuário.",
-    iconClassName: "text-orange-500",
+  "Animações em React": {
+    icon: Sparkles,
+    description: "Animações com CSS, Framer Motion e conceitos de motion design.",
+    iconClassName: "text-pink-500",
   },
   Testes: {
     icon: FlaskConical,
@@ -105,26 +118,50 @@ const categoryConfig: Record<
       "Estratégias e ferramentas para garantir qualidade do código.",
     iconClassName: "text-green-500",
   },
+  "Arquitetura Front-end": {
+    icon: Boxes,
+    description:
+      "Padrões, organização e decisões estruturais para aplicações front-end.",
+    iconClassName: "text-indigo-500",
+  },
+  Ferramentas: {
+    icon: Wrench,
+    description: "Git, build tools, linting e automação de deploy.",
+    iconClassName: "text-orange-600",
+  },
 };
 
 export function getCategoryItems(): CategoryItem[] {
-  return categories.map((name) => {
-    const config = categoryConfig[name] ?? {
+  return roadmapPhases.map((phase) => {
+    const config = categoryConfig[phase.title] ?? {
       icon: Layers,
-      description: "Conceitos documentados nesta área do conhecimento.",
+      description: "Conceitos documentados nesta fase do roadmap.",
       iconClassName: "text-slate-500",
     };
 
     return {
-      name,
-      description: config.description,
+      name: phase.title,
+      id: phase.id,
+      description: phase.description ?? config.description,
       icon: config.icon,
       iconClassName: config.iconClassName,
-      count: articles.filter((article) => article.category === name).length,
+      count: articles.filter((article) => article.category === phase.title)
+        .length,
+      totalTopics: phase.topics.length,
     };
   });
 }
 
 export function getCategoryByName(name: string): CategoryItem | undefined {
-  return getCategoryItems().find((category) => category.name === name);
+  const phase = getRoadmapPhaseByTitle(name);
+  if (!phase) return undefined;
+
+  const items = getCategoryItems();
+  return items.find((category) => category.name === name);
+}
+
+export function getCategoryEnabledCount(name: string): number {
+  const phase = getRoadmapPhaseByTitle(name);
+  if (!phase) return 0;
+  return getEnabledTopicCount(phase);
 }

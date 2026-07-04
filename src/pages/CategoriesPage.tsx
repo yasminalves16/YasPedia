@@ -1,10 +1,11 @@
 import { FileText } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { articles, categories } from "../articles";
+import { categories } from "../articles";
 import { Breadcrumb } from "../components/Breadcrumb";
-import { CategoryArticleRow } from "../components/CategoryArticleRow";
 import { KnowledgeFilters } from "../components/KnowledgeFilters";
+import { RoadmapTopicRow } from "../components/RoadmapTopicRow";
+import { getRoadmapPhaseByTitle } from "../data/roadmap";
 import { useArticlesWithPreferences } from "../hooks/useArticlesWithPreferences";
 import type { LearningStatus } from "../types/article";
 import { getCategoryByName } from "../utils/categories";
@@ -13,23 +14,29 @@ export function CategoriesPage() {
   const [searchParams] = useSearchParams();
   const selectedCategory = searchParams.get("categoria") ?? categories[0];
   const category = getCategoryByName(selectedCategory);
+  const phase = getRoadmapPhaseByTitle(selectedCategory);
   const articlesWithPreferences = useArticlesWithPreferences();
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [selectedStatuses, setSelectedStatuses] = useState<LearningStatus[]>([]);
 
-  const categoryArticles = useMemo(
+  const articleBySlug = useMemo(
     () =>
-      articlesWithPreferences.filter(
-        (article) => article.category === selectedCategory,
+      new Map(
+        articlesWithPreferences.map((article) => [article.slug, article]),
       ),
-    [articlesWithPreferences, selectedCategory],
+    [articlesWithPreferences],
   );
 
-  const filteredArticles = useMemo(() => {
-    return categoryArticles.filter((article) => {
-      if (favoritesOnly && !article.isFavorite) {
-        return false;
-      }
+  const visibleTopics = useMemo(() => {
+    if (!phase) return [];
+
+    return phase.topics.filter((topic) => {
+      if (!topic.enabled) return true;
+
+      const article = topic.slug ? articleBySlug.get(topic.slug) : undefined;
+      if (!article) return false;
+
+      if (favoritesOnly && !article.isFavorite) return false;
 
       if (
         selectedStatuses.length > 0 &&
@@ -40,7 +47,9 @@ export function CategoriesPage() {
 
       return true;
     });
-  }, [categoryArticles, favoritesOnly, selectedStatuses]);
+  }, [phase, articleBySlug, favoritesOnly, selectedStatuses]);
+
+  const enabledInPhase = phase?.topics.filter((topic) => topic.enabled) ?? [];
 
   const toggleStatus = (status: LearningStatus) => {
     setSelectedStatuses((current) =>
@@ -50,15 +59,41 @@ export function CategoriesPage() {
     );
   };
 
-  if (!category) {
+  if (!category || !phase) {
     return null;
   }
 
   const Icon = category.icon;
   const countLabel =
     category.count === 1
-      ? "1 conhecimento"
-      : `${category.count} conhecimentos`;
+      ? "1 disponível"
+      : `${category.count} disponíveis`;
+  const totalLabel = `${category.totalTopics} no roadmap`;
+
+  const groupedTopics = phase.topics.some((topic) => topic.group)
+    ? phase.topics.reduce<Map<string | undefined, typeof phase.topics>>(
+        (groups, topic) => {
+          const key = topic.group;
+          const current = groups.get(key) ?? [];
+          groups.set(key, [...current, topic]);
+          return groups;
+        },
+        new Map(),
+      )
+    : null;
+
+  const renderTopic = (topic: (typeof phase.topics)[number]) => {
+    const article = topic.slug ? articleBySlug.get(topic.slug) : undefined;
+    const isFilteredOut =
+      topic.enabled &&
+      !visibleTopics.some((visible) => visible.id === topic.id);
+
+    if (isFilteredOut) return null;
+
+    return (
+      <RoadmapTopicRow key={topic.id} topic={topic} article={article} />
+    );
+  };
 
   return (
     <div className="space-y-8">
@@ -88,33 +123,38 @@ export function CategoriesPage() {
 
         <p className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
           <FileText size={15} />
-          {countLabel}
+          {countLabel} · {totalLabel}
         </p>
       </header>
 
-      <KnowledgeFilters
-        favoritesOnly={favoritesOnly}
-        onToggleFavoritesOnly={() => setFavoritesOnly((current) => !current)}
-        selectedStatuses={selectedStatuses}
-        onToggleStatus={toggleStatus}
-        resultCount={filteredArticles.length}
-      />
+      {enabledInPhase.length > 0 && (
+        <KnowledgeFilters
+          favoritesOnly={favoritesOnly}
+          onToggleFavoritesOnly={() => setFavoritesOnly((current) => !current)}
+          selectedStatuses={selectedStatuses}
+          onToggleStatus={toggleStatus}
+          resultCount={visibleTopics.filter((topic) => topic.enabled).length}
+        />
+      )}
 
       <section className="space-y-3">
-        {filteredArticles.length > 0 ? (
-          filteredArticles.map((article) => (
-            <CategoryArticleRow key={article.slug} article={article} />
+        {groupedTopics ? (
+          [...groupedTopics.entries()].map(([group, topics]) => (
+            <div key={group ?? "default"} className="space-y-3">
+              {group && (
+                <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                  {group}
+                </h2>
+              )}
+              {topics.map(renderTopic)}
+            </div>
           ))
-        ) : categoryArticles.length > 0 ? (
-          <div className="rounded-xl border border-dashed border-slate-200 px-5 py-10 text-center dark:border-slate-800">
-            <p className="text-slate-500 dark:text-slate-400">
-              Nenhum conhecimento encontrado com os filtros atuais.
-            </p>
-          </div>
+        ) : visibleTopics.length > 0 ? (
+          visibleTopics.map(renderTopic)
         ) : (
           <div className="rounded-xl border border-dashed border-slate-200 px-5 py-10 text-center dark:border-slate-800">
             <p className="text-slate-500 dark:text-slate-400">
-              Ainda não há conhecimentos cadastrados nesta categoria.
+              Nenhum conceito disponível com os filtros atuais.
             </p>
           </div>
         )}

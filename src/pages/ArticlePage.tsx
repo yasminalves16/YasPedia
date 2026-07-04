@@ -206,6 +206,11 @@ export function ArticlePage() {
               <ReferenceCard key={reference.title} reference={reference} />
             ))}
           </div>
+          <p className="mt-4 text-xs leading-5 text-slate-500 dark:text-slate-400">
+            Este artigo foi escrito com base nas referências abaixo, mas explicado
+            utilizando minhas próprias palavras para facilitar meu aprendizado e
+            futuras consultas.
+          </p>
         </ArticleSection>
 
         <ArticleSection

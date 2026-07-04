@@ -6,7 +6,7 @@ export const variablesArticle: Article = {
   question: "O que são variáveis?",
   shortAnswer:
     "Variáveis são nomes usados para guardar e reutilizar valores durante a execução de um programa.",
-  category: "Fundamentos",
+  category: "Lógica de Programação",
   subcategory: "Dados",
   tags: ["Fundamentos", "Memória", "JavaScript"],
   updatedAt: "2026-07-03",

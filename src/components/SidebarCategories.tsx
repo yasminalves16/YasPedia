@@ -68,7 +68,7 @@ export function SidebarCategories({ onNavigate }: SidebarCategoriesProps) {
               />
               <span className="min-w-0 flex-1 truncate">{name}</span>
               <span className="shrink-0 text-xs tabular-nums text-slate-400 dark:text-slate-500">
-                {count}
+                {count > 0 ? count : "—"}
               </span>
             </NavLink>
           );

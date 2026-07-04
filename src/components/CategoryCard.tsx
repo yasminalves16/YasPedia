@@ -10,9 +10,11 @@ interface CategoryCardProps {
 export function CategoryCard({ category }: CategoryCardProps) {
   const Icon = category.icon;
   const countLabel =
-    category.count === 1
-      ? "1 conhecimento"
-      : `${category.count} conhecimentos`;
+    category.count === 0
+      ? `${category.totalTopics} no roadmap`
+      : category.count === 1
+        ? `1 de ${category.totalTopics} disponível`
+        : `${category.count} de ${category.totalTopics} disponíveis`;
 
   return (
     <Link

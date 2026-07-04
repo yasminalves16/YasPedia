@@ -64,18 +64,23 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
           {new Date(article.updatedAt).toLocaleDateString("pt-BR")}
         </p>
 
-        <div className="flex flex-wrap items-center gap-1.5">
-          <Tag
-            size={14}
-            strokeWidth={1.75}
-            className="text-slate-400 dark:text-slate-500"
-            aria-hidden
-          />
-          {article.tags.map((tag) => (
-            <Badge key={tag} variant="tag">
-              {tag.toLowerCase()}
-            </Badge>
-          ))}
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <Tag
+              size={14}
+              strokeWidth={1.75}
+              className="text-slate-400 dark:text-slate-500"
+              aria-hidden
+            />
+            {article.tags.map((tag) => (
+              <Badge key={tag} variant="tag">
+                {tag.toLowerCase()}
+              </Badge>
+            ))}
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            ✍️ Conteúdo autoral
+          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">

@@ -6,7 +6,7 @@ export const algorithmArticle: Article = {
   question: "O que é um algoritmo?",
   shortAnswer:
     "Um algoritmo é uma sequência finita de passos lógicos usada para resolver um problema ou executar uma tarefa.",
-  category: "Fundamentos",
+  category: "Lógica de Programação",
   subcategory: "Algoritmos",
   tags: ["Fundamentos", "Lógica", "Resolução de problemas"],
   updatedAt: "2026-07-03",
