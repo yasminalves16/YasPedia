@@ -24,7 +24,7 @@ export function RoadmapTopicRow({ topic, content }: RoadmapTopicRowProps) {
         <div className="flex items-start justify-between gap-6">
           <div className="min-w-0 flex-1">
             <h3 className="font-semibold text-slate-900 dark:text-slate-100">
-              {content.title}
+              {topic.title}
             </h3>
             <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
               {content.shortAnswer}
