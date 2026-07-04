@@ -2,12 +2,12 @@ import type { Content } from "../../types/content";
 
 export const computerContent: Content = {
   slug: "o-que-e-um-computador",
-  title: "O que é um Computador?",
-  question: "O que é um computador?",
+  title: "O que é Computador",
+  question: "O que é computador?",
   shortAnswer:
     "Um computador é uma máquina que consegue receber, armazenar, processar e produzir informações.",
-  category: "Fundamentos da Computação",
-  subcategory: "Introdução",
+  category: "Arquitetura de Computadores",
+  subcategory: "Computador",
   tags: [
     "Fundamentos",
     "Hardware",

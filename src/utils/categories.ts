@@ -36,6 +36,12 @@ const categoryConfig: Record<
   { icon: LucideIcon; description: string; iconClassName: string }
 > = {
   "Fundamentos da Computação": {
+    icon: Layers,
+    description:
+      "Panorama da computação: o que é, relação com TI, áreas e carreiras.",
+    iconClassName: "text-violet-500",
+  },
+  "Arquitetura de Computadores": {
     icon: Cpu,
     description:
       "Como o computador funciona: hardware, memória, periféricos, redes, SO e processos.",
