@@ -144,6 +144,13 @@ export const roadmapPhases: RoadmapPhase[] = [
         undefined,
         "Sistema operacional",
       ),
+      topic(
+        "concorrencia-vs-paralelismo",
+        "Concorrência x Paralelismo",
+        false,
+        undefined,
+        "Sistema operacional",
+      ),
     ],
   },
   {
@@ -187,6 +194,14 @@ export const roadmapPhases: RoadmapPhase[] = [
         "Dados",
       ),
       topic("booleanos", "Booleanos", false, undefined, "Dados"),
+      topic(
+        "operadores-logicos",
+        "Operadores lógicos",
+        false,
+        undefined,
+        "Dados",
+      ),
+      topic("strings", "Strings", false, undefined, "Dados"),
       topic("operadores", "Operadores", false, undefined, "Dados"),
       topic("casting", "Casting", false, undefined, "Dados"),
       topic(
@@ -360,6 +375,14 @@ export const roadmapPhases: RoadmapPhase[] = [
       topic("graphql", "GraphQL", false, undefined, "APIs"),
       topic("websocket", "WebSocket", false, undefined, "APIs"),
       topic("cors", "CORS", false, undefined, "APIs"),
+      topic("oauth", "OAuth 2.0", false, undefined, "Autenticação"),
+      topic(
+        "cache-http",
+        "Cache HTTP",
+        false,
+        undefined,
+        "Performance web",
+      ),
     ],
   },
   {
@@ -368,6 +391,29 @@ export const roadmapPhases: RoadmapPhase[] = [
     description:
       "Como o navegador carrega, renderiza e executa aplicações web.",
     topics: [
+      topic("html", "HTML", false, undefined, "HTML"),
+      topic(
+        "html-semantico",
+        "HTML semântico",
+        false,
+        undefined,
+        "HTML",
+      ),
+      topic(
+        "formularios-html",
+        "Formulários HTML",
+        false,
+        undefined,
+        "HTML",
+      ),
+      topic(
+        "acessibilidade-web",
+        "Acessibilidade web (a11y)",
+        false,
+        undefined,
+        "Acessibilidade",
+      ),
+      topic("aria", "ARIA", false, undefined, "Acessibilidade"),
       topic(
         "como-o-navegador-funciona",
         "Como o navegador funciona",
@@ -435,6 +481,21 @@ export const roadmapPhases: RoadmapPhase[] = [
       topic("transform", "Transform", false, undefined, "CSS"),
       topic("transition", "Transition", false, undefined, "CSS"),
       topic("animation", "Animation", false, undefined, "CSS"),
+      topic(
+        "localstorage",
+        "localStorage / sessionStorage",
+        false,
+        undefined,
+        "Armazenamento no browser",
+      ),
+      topic(
+        "service-worker",
+        "Service Worker",
+        false,
+        undefined,
+        "Armazenamento no browser",
+      ),
+      topic("pwa", "PWA", false, undefined, "Armazenamento no browser"),
     ],
   },
   {
@@ -815,6 +876,14 @@ export const roadmapPhases: RoadmapPhase[] = [
         undefined,
         "Utilitários",
       ),
+      topic("next-js", "Next.js", false, undefined, "Frameworks"),
+      topic(
+        "react-server-components",
+        "React Server Components",
+        false,
+        undefined,
+        "Frameworks",
+      ),
     ],
   },
   {
@@ -992,8 +1061,36 @@ export const roadmapPhases: RoadmapPhase[] = [
       ),
       topic("monorepo", "Monorepo", false, undefined, "Organização"),
       topic(
+        "microfrontends",
+        "Microfrontends",
+        false,
+        undefined,
+        "Organização",
+      ),
+      topic(
+        "module-federation",
+        "Module Federation",
+        false,
+        undefined,
+        "Organização",
+      ),
+      topic(
+        "design-system",
+        "Design System",
+        false,
+        undefined,
+        "Organização",
+      ),
+      topic(
         "design-patterns",
         "Design Patterns",
+        false,
+        undefined,
+        "Padrões",
+      ),
+      topic(
+        "seguranca-front-end",
+        "Segurança front-end (XSS, CSRF)",
         false,
         undefined,
         "Padrões",
@@ -1022,6 +1119,14 @@ export const roadmapPhases: RoadmapPhase[] = [
     topics: [
       topic("git", "Git", false, undefined, "Controle de versão"),
       topic("github", "GitHub", false, undefined, "Controle de versão"),
+      topic("terminal", "Terminal / CLI", false, undefined, "Ambiente"),
+      topic(
+        "variaveis-de-ambiente",
+        "Variáveis de ambiente",
+        false,
+        undefined,
+        "Ambiente",
+      ),
       topic(
         "conventional-commits",
         "Conventional Commits",
@@ -1036,6 +1141,7 @@ export const roadmapPhases: RoadmapPhase[] = [
       topic("vite", "Vite", false, undefined, "Build"),
       topic("bundler", "Bundler", false, undefined, "Build"),
       topic("tree-shaking", "Tree Shaking", false, undefined, "Build"),
+      topic("turborepo", "Turborepo", false, undefined, "Build"),
       topic("eslint", "ESLint", false, undefined, "Qualidade de código"),
       topic("prettier", "Prettier", false, undefined, "Qualidade de código"),
       topic("husky", "Husky", false, undefined, "Qualidade de código"),
